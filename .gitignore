@@ -4,7 +4,7 @@
 .mtj.tmp/
 
 # Package Files #
-*.jar
+# *.jar -- some jar files are embeded into the project.
 *.war
 *.ear
 
