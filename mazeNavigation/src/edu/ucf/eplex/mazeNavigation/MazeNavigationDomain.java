@@ -56,8 +56,6 @@ public class MazeNavigationDomain extends EvaluationDomain<Path> {
     	}
     	
     	new MazeNavigationDomain(props);
-    	// TODO  setup domain
-    	// TODO  launch the NA-IEC session window 
     }
 
     private Map<Candidate, BehaviorVector> allPoints;
@@ -166,8 +164,14 @@ public class MazeNavigationDomain extends EvaluationDomain<Path> {
 
         // Evaluate over x timesteps (or until distToGoal <= 5)
         for (int i = 0; i < maxTimesteps; i++) {
-            env.step();
-            if (env.distToGoal() <= goalThreshold) {
+           	env.step();
+
+       		// IF this is a fragile maze AND a wall has been hit, then the trial is over.
+           	if (fragileMaze && env.isHitWallEventSet()) {
+           		break;
+           	}
+
+           	if (env.distToGoal() <= goalThreshold) {
                 System.out.println("<--------------------MAZE SOLVED!  GOAL FOUND BY CHROMOSOME " + subject.getId() + "!-------------------->");
                 subject.setAsSolution(true);
 //                for (Position pt : env.getPath()) {
@@ -242,6 +246,7 @@ public class MazeNavigationDomain extends EvaluationDomain<Path> {
             System.out.println("WARN:  Property object is NULL!");
         }
         mazeType = props.getProperty(MAZE_TYPE_KEY, DEFAULT_MAZE_TYPE);
+        fragileMaze = props.getBooleanProperty(FRAGILE_MAZE_KEY, DEFAULT_FRAGILE_MAZE);
         maxTimesteps = props.getIntProperty(TIMESTEPS_KEY, DEFAULT_TIMESTEPS);
         goalThreshold = props.getIntProperty(GOAL_THRESHOLD_KEY, DEFAULT_GOAL_THRESHOLD);
 
@@ -256,7 +261,11 @@ public class MazeNavigationDomain extends EvaluationDomain<Path> {
     }
     private final static String MAZE_TYPE_KEY = "mazeDomain.map";
     private final static String DEFAULT_MAZE_TYPE = "medium.map";
-    private static String mazeType = DEFAULT_MAZE_TYPE;
+    private String mazeType = DEFAULT_MAZE_TYPE;
+
+    private final static String FRAGILE_MAZE_KEY = "mazeDomain.fragileMap";
+    private final static boolean DEFAULT_FRAGILE_MAZE = false;
+    private boolean fragileMaze = DEFAULT_FRAGILE_MAZE;
 
     /**
      *

@@ -91,6 +91,7 @@ public class MazeDomainProperties extends NaiecDomainProperties {
         // experiment
         //------------------
         put("mazeDomain.map", "hard.map");
+        put("mazeDomain.fragileMap", "true");
         put("mazeDomain.timesteps", "400");
         put("mazeDomain.goalThreshold", "5");
         put("mazeDomain.enableViwer", "false");

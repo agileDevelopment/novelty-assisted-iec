@@ -58,13 +58,24 @@ public class Environment extends Observable implements Simulatable {
         if (isValid(next)) {
             return (next);
         } else {
+        	// Supports the fragile maze property by tracking if
+        	// a wall has been hit.  MazeDomain can then end the simulation.
+        	setHitWallEvent();
             return (robot.getPosition().add(0, 0, dTheta));
         }
 
         // Perhaps, in the future, the robot may adjust it's acceleration by these same tick units as well
     }
 
-    private boolean isValid(Position pose) {
+    private void setHitWallEvent() {
+    	hitWallEvent = true;
+	}
+    
+    public boolean isHitWallEventSet() {
+    	return hitWallEvent;
+    }
+
+	private boolean isValid(Position pose) {
         for (Line2D wall : myMap.getWalls()) {
             if (wall.ptSegDist(pose) < myRobot.getRadius()) {
                 return false;
@@ -114,5 +125,6 @@ public class Environment extends Observable implements Simulatable {
     private final Robot myRobot;
     private final Behavior myRobotBehavior;
     private Path path;
+    private boolean hitWallEvent = false;
     private static final int RESOLUTION = 1;
 }
